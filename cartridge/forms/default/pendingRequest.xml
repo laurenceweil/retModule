@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<form xmlns="http://www.demandware.com/xml/form/2008-04-19">
+
+	<field formid="rejectReason" type="string" mandatory="false" binding="csaComments" label="Reject reason" value-error="forms.missingReasonForReject.value-error"/>
+	<field formid="id" type="string" mandatory="true"  />
+	
+	<action formid="rejectReturn" valid-form="false"/>
+	<action formid="processReturn" valid-form="true"/>
+	
+</form>

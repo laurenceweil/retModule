@@ -1,0 +1,100 @@
+<isdecorate template="application/MenuFrame">
+<iscontent type="text/html" charset="UTF-8">
+<isinclude template="inc/Modules">
+
+<!-- Page Navigator -->
+<isset name="TOP_URL"   value="${URLUtils.url('SiteNavigationBar-ShowMenuitemOverview', 'CurrentMenuItemId', pdict.CurrentMenuItemId)}" scope="PAGE">
+<isbreadcrumb name1="${pdict.mainmenuname}" url1="${TOP_URL}" name2="Demo Site Extension">
+<!-- EO Page Navigator -->
+
+<!-- errors -->
+<iscomment> 
+<isif condition="${!pdict.SampleSiteParameter}"> <!-- or any other useful error condition -->
+	<table border="0" cellspacing="0" cellpadding="4" width="100%" class="error_box n s e w">
+		<tr valign="top">
+			<td class="error_icon top e"><img src="${URLUtils.webRoot()}/images/error.gif" width="16" height="15" alt="" border="0"/></td>
+			<td class="error top" width="100%">
+			<p>Custom Error ...: <isprint value="${pdict.ErrorParameter}"> hasn't been defined. This is an error message sample.<br/>
+			</td>
+		</tr>
+	</table>
+</isif>
+</iscomment>
+<!-- end errors-->
+
+	<isif condition="${!empty(pdict.ReturnRequests)}">
+		
+	<h2 class="content-header">
+		<isprint value="${Resource.msg('bm_returns.title','bm_returns',null)}" />
+
+	<iscomment>render a box for each shipment</iscomment>
+	
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<thead>
+				<tr>
+				    <th class="table_header w e s" width="20%">${Resource.msg('bm_returns.returnRef','bm_returns','Ref')}</th>
+				   	<th class="table_header w e s" width="10%">${Resource.msg('bm_returns.dateSubmitted','bm_returns','Date submitted')}</th>
+					<th class="table_header w e s" width="10%">${Resource.msg('bm_returns.status','bm_returns','Current status')}</th>
+					<th class="table_header w e s" width="40%">${Resource.msg('bm_returns.item','bm_returns',null)}</th>
+					<th class="table_header w e s" width="10%">${Resource.msg('bm_returns.returnedQty','bm_returns','Returned Quantity')}</th>
+					<th class="table_header w e s" width="10%">${Resource.msg('bm_returns.returnReason','bm_returns','Reason')}</th>
+				</tr>
+			</thead>
+				<isloop items="${pdict.ReturnRequests}" var="returnRequest" status="resLoopState">
+					<isloop items="${returnRequest.returnedItems}" var="returns" status="itemloopstate">
+				
+				<tr>
+				     <isif condition="${itemloopstate.first}">
+				     	<td class="table_detail w e s" >
+					 	 	<a href="${URLUtils.url('ReturnsAction-HandlePendingRequest','retRequestId',returnRequest.id)}" ><isprint value="${returnRequest.id}"/></a>				    						            
+				    	</td>
+				    	<td class="table_detail w e s" >
+					 	 	<isprint value="${returnRequest.submissionDate}" style="DATE_LONG" />				    						            
+				    	</td>
+				    	<td class="table_detail w e s" >
+				        	<isprint value="${returnRequest.status}"/>				    						            
+				    	</td>
+				    	<iselse/>
+				    	<td class="table_detail w e s" >
+				    	</td>
+				    	<td class="table_detail w e s" >
+				    	</td>
+				    	<td class="table_detail w e s" >
+				    	</td>
+				    </isif>	
+					<td class="table_detail w e s" >
+						<isprint value="${returns.item}" />
+					</td>
+	
+					<td class="table_detail w e s" >
+				    	<isprint value="${returns.quantity}" />
+				    </td>
+	
+					<td class="table_detail w e s" >
+				        <isprint value="${returns.reason}"/>				    						            
+					</td>
+					
+				</tr>
+			</isloop>
+		</isloop>
+		</form>
+	</table>
+			
+		
+	<iselse/>
+			No pending return requests found.
+	</isif>
+
+
+<table class="bottombuttons">          
+	<form name="Back" action="${TOP_URL}" method="post">
+		<tr>
+			<td>
+				<input class="button" type="submit" name="backToPrefs" value="&lt;&lt; Back"/>
+			</td>
+		</tr>
+	</form>
+</table>
+<!-- EO Working Area -->
+
+</isdecorate>

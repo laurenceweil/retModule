@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!-- TemplateName : user/orderemailconfirmation.isml -->
+<!--- TemplateComment : creates an order confirmation , that is send per EMail
+  -- Address data are included via miniaddress
+  -- "subject" is copied as email subject
+  -- keep in mind all formatting (css) needs to be placed inside these templates
+     to be displayed properly in the shoppers emailbox
+--->
+
+<iscontent type="text/html" session="false" charset="UTF-8">
+<isset name="SHOP_URL" value="${URLUtils.http(new dw.web.URLAction('Home-Show', pdict.StorefrontName))}" scope="PAGE"/>
+<isset name="TRACK_URL" value="${URLUtils.https(new dw.web.URLAction('Order-Track', pdict.StorefrontName))}" scope="PAGE"/>
+
+<subject>Approval of your return request<isprint value="${pdict.EmailReturnRequest.id}"></subject>
+
+<head>
+<isinclude template="order/orderemailcss">
+</head>
+
+<!---
+Each tag is to be specified max. once.
+Multiple email address can be separated by , (a la RFC2822)
+
+<TO>recipient@demandware.com</TO>
+<CC>customerservice@demandware.com, support@demandware.com</CC>
+<BCC>archive@demandware.com</BCC>
+<FROM>sender@demandware.com</FROM>
+--->
+
+<body>
+
+<table class="header" cellSpacing=0 cellPadding=5 width=640 border=0>
+  <tbody>
+  <tr>
+    <td class="header"><strong>SiteGenesis</strong></td>
+    <td class="address"><strong>Demo SiteGenesis</strong><br />
+        5 Wall Street<br />
+        Burlington,&nbsp;MA&nbsp;01803<br />
+        <a href="${SHOP_URL}" title="Jump to our store"><span>SiteGenesis</span></a><br />
+        Phone: +1.888.553.9216</td>
+  </TR>
+  </tbody>
+</table>
+
+<div class="content">
+    <div class="contentheader">
+        <span class="confirmation">Return Request Confirmation </span>Return reference number: <isprint value="${pdict.EmailReturnRequest.id}">
+    </div>
+    <div class="infotext">
+        <p>This email confirms that we have approved your return request at <a href="${SHOP_URL}" title="Jump to our store"><span>SiteGenesis</span></a>. 
+
+        <p><font color=#ff0000>Please print the return manifest below and include it when you send your returns back to us.</font></p>
+    </div>
+
+    <div class="order">
+       
+       <div id="orderdetailstable">
+ 
+		<!--- Render the products we are shipping --->
+            <table class="producttable">
+		<!--- header --->
+				<thead>
+					<tr>
+						<th>Product Details</th>
+						<th>Return reason</th>
+						<th>Qty.</th>
+					</tr>
+				</thead>
+		<!--- Order Details Body --->
+				<tbody>          
+				<isloop iterator="${pdict.EmailReturnRequest.returnedItems}" alias="returnLineItem" status="plistatus">
+					<tr>
+						<td class="product">
+							<!--- if item has a category context, forward this category context --->
+							<isprint value="${returnLineItem.item}">		
+						</td>
+					    <td class="quantitycolumn">
+					    	<isprint value="${returnLineItem.reason}">
+				    	</td>
+					    <td class="price">
+				            <isprint value="${returnLineItem.quantity}">
+					    </td>
+					</tr>
+		<!--- /shipping address --->
+	
+
+			</isloop>
+			</tbody>
+		</table>		
+
+</div>
+
+    </div>
+</div>
+</body>
+</html>

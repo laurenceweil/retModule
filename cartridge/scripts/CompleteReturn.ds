@@ -1,0 +1,26 @@
+/**
+* Demandware Script File
+* 	Completes the return lifecyle by updating the status of the return rewquest to complete and setting the credit amount to whatever value was submitted. 
+*
+*   @input approvedRequest : Object This is a sample comment.
+*	@input creditAmount : Number Amount credited back to the customer on returning items.
+*/
+importPackage( dw.system );
+importPackage( dw.object );
+importPackage( dw.customer );
+
+var logger : Logger = Logger.getLogger("category");
+
+
+function execute( args : PipelineDictionary ) : Number {
+
+   // read pipeline dictionary input parameter
+  	 var approved : Object = args.approvedRequest;
+  	 var credit : Number = args.creditAmount;   
+  	 var returnRequest : Object = CustomObjectMgr.getCustomObject('ReturnRequest', approved.id);
+ 
+  	returnRequest.custom.status = 'COMPLETE';
+	returnRequest.custom.creditAmount = credit;
+	
+	return PIPELET_NEXT;
+}

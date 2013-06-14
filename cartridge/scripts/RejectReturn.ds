@@ -1,0 +1,36 @@
+/**
+* Demandware Script File
+*   Handles rejecting a return request, sets the reason and updates the status of the request.
+*
+*   @input rejectedRequest : Object This is a sample comment.
+*
+*/
+importPackage( dw.system );
+importPackage( dw.object );
+
+var logger : Logger = Logger.getLogger("category");
+
+
+function execute( args : PipelineDictionary ) : Number {
+
+    // read pipeline dictionary input parameter
+    var reject : Object = args.rejectedRequest;
+    
+    var returnRequest : Object = CustomObjectMgr.getCustomObject('ReturnRequest', reject.id.value);
+    
+    logger.debug("Rejecting request {0}",reject.id.value);
+    
+    var reason : String = reject.rejectReason.value;
+    
+    if(reason == null || reason.trim() == ""){
+    	
+    	reject.rejectReason.invalidateFormElement();
+    	return PIPELET_ERROR;
+    }
+    
+    returnRequest.custom.status = 'REJECTED';
+    returnRequest.custom.csaComments = reason;
+
+   //args.request = returnRequest;
+   return PIPELET_NEXT;
+}

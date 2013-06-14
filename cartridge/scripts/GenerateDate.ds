@@ -1,0 +1,32 @@
+/**
+* Demandware Script File
+* 	Really a date util function, could extract this into a library for usage by other files if need be.
+*
+*   @input days : Object The number of days from today to roll the date forwards or backwards
+*   @input futureDate : Boolean Generate a future or past date?
+*   @output date : Date
+*
+*/
+importPackage( dw.system );
+importPackage( dw.util );
+
+function execute( args : PipelineDictionary ) : Number
+{
+
+    var createFutureDate : Boolean = args.futureDate;
+	var daysToRoll : Integer = args.days;
+
+	var today : Calendar = new Calendar();
+	
+	if(createFutureDate){
+		
+		today.roll(Calendar.DAY_OF_YEAR, daysToRoll);
+	} else {
+		
+		today.roll(Calendar.DAY_OF_YEAR, -daysToRoll);
+	}
+
+    args.date = today.getTime();
+
+   return PIPELET_NEXT;
+}

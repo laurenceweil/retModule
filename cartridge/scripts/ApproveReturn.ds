@@ -1,0 +1,46 @@
+/**
+* Demandware Script File
+* To define input and output parameters, create entries of the form:
+*
+* @<paramUsageType> <paramName> : <paramDataType> [<paramComment>]
+*
+* where
+*   <paramUsageType> can be either 'input' or 'output'
+*   <paramName> can be any valid parameter name
+*   <paramDataType> identifies the type of the parameter
+*   <paramComment> is an optional comment
+*
+* For example:
+*
+*   @input approvedRequest : Object This is a sample comment.
+*-   @output request : Object
+*	@output customerProfile : Object
+*/
+importPackage( dw.system );
+importPackage( dw.object );
+importPackage( dw.customer );
+
+var logger : Logger = Logger.getLogger("category");
+
+
+function execute( args : PipelineDictionary ) : Number {
+
+   // read pipeline dictionary input parameter
+   var approved : Object = args.approvedRequest;   
+   var returnRequest : Object = CustomObjectMgr.getCustomObject('ReturnRequest', approved.id);
+   var profile : Profile = CustomerMgr.getProfile(approved.customer); 
+   
+   if(profile == null || returnRequest == null){
+   		
+   		logger.error("return request id {0} or profile null, customer id {1}, unable to mail the approval to customer",approved.id, approved.customer);
+   		return PIPELET_ERROR;
+   }
+   
+   logger.debug("Approving request {0}, for customer {1}",approved.id.value,  approved.customer.value);
+    
+   returnRequest.custom.status = 'APPROVED';
+
+   args.customerProfile = profile;
+   
+   return PIPELET_NEXT;
+}
